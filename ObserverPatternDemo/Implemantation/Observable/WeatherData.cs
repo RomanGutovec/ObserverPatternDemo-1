@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace ObserverPatternDemo.Implemantation.Observable
 {
@@ -7,11 +8,51 @@ namespace ObserverPatternDemo.Implemantation.Observable
     {
         private List<IObserver<WeatherInfo>> observers;
         private WeatherInfo currentWeather;
+        private int measurePeriodSeconds;
+        private int intervaMeasurelSeconds;
 
-        public WeatherData()
+        public WeatherData(int measurePeriodSeconds, int intervalSeconds)
         {
             observers = new List<IObserver<WeatherInfo>>();
             currentWeather = new WeatherInfo();
+            IntervaMeasurelSeconds = intervalSeconds;
+            MeasurePeriodSeconds = measurePeriodSeconds;
+        }
+
+        public int MeasurePeriodSeconds
+        {
+            get
+            {
+                return measurePeriodSeconds;
+            }
+
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentNullException($"Incorrect inputed value");
+                }
+
+                measurePeriodSeconds = value;
+            }
+        }
+
+        public int IntervaMeasurelSeconds
+        {
+            get
+            {
+                return intervaMeasurelSeconds;
+            }
+
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentNullException($"Incorrect inputed value");
+                }
+
+                intervaMeasurelSeconds = value;
+            }
         }
 
         public void Notify(IObservable<WeatherInfo> sender, WeatherInfo info)
@@ -44,6 +85,30 @@ namespace ObserverPatternDemo.Implemantation.Observable
             {
                 observers.Remove(observer);
             }
+        }
+
+        public void StartMeasure()
+        {
+            for (int i = 0; i < measurePeriodSeconds / IntervaMeasurelSeconds; i++)
+            {
+                Console.WriteLine($"\nNew weather data...\n");
+                Notify(this, GetNewWeather());
+                Console.WriteLine(new string('-', 70));
+                Thread.Sleep(IntervaMeasurelSeconds * 1000);
+            }
+        }
+
+        private WeatherInfo GetNewWeather()
+        {
+            Random random = new Random();
+            WeatherInfo newWeather = new WeatherInfo()
+            {
+                Temperature = random.Next(10, 20),
+                Humidity = random.Next(60, 100),
+                Pressure = random.Next(600, 700)
+            };
+
+            return newWeather;
         }
     }
 }

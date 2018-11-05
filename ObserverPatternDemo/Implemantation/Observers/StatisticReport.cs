@@ -28,8 +28,8 @@ namespace ObserverPatternDemo.Implemantation.Observers
             historyWeather.Add(info);
             WeatherInfo averageData = CalculateWeatherData(info);
             Console.WriteLine($"\nCurrent Statistic Report\n" +
-                $"average Temperature: {averageData.Temperature}" +
-                $"average Humidity: {info.Humidity} " +
+                $"average Temperature: {averageData.Temperature} " +
+                $"average Humidity: {averageData.Humidity} " +
                 $"average Pressure: {averageData.Pressure} ");
         }
 
