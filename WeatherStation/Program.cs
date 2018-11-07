@@ -23,10 +23,6 @@ namespace WeatherStation
             weatherData.Register(conditionsReport);
             weatherData.Register(statisticReport);
 
-            WeatherInfo dataAboutWeather = new WeatherInfo()
-            { Humidity = 80, Pressure = 750, Temperature = 18 };
-            weatherData.Notify(weatherData, dataAboutWeather);
-
             weatherData.StartMeasure();
             Console.ReadLine();
         }

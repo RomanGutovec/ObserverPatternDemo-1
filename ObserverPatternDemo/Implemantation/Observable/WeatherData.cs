@@ -55,15 +55,6 @@ namespace ObserverPatternDemo.Implemantation.Observable
             }
         }
 
-        public void Notify(IObservable<WeatherInfo> sender, WeatherInfo info)
-        {
-            currentWeather = info;
-            foreach (var observer in observers)
-            {
-                observer.Update(sender, currentWeather);
-            }
-        }
-
         public void Register(IObserver<WeatherInfo> observer)
         {
             if (observer == null)
@@ -73,6 +64,7 @@ namespace ObserverPatternDemo.Implemantation.Observable
 
             observers.Add(observer);
         }
+
 
         public void Unregister(IObserver<WeatherInfo> observer)
         {
@@ -87,12 +79,23 @@ namespace ObserverPatternDemo.Implemantation.Observable
             }
         }
 
+        void IObservable<WeatherInfo>.Notify(WeatherInfo info) => Notify(info);
+
+        protected virtual void Notify(WeatherInfo info)
+        {
+            currentWeather = info;
+            foreach (var observer in observers)
+            {
+                observer.Update(this, currentWeather);
+            }
+        }
+
         public void StartMeasure()
         {
             for (int i = 0; i < measurePeriodSeconds / IntervaMeasurelSeconds; i++)
             {
                 Console.WriteLine($"\nNew weather data...\n");
-                Notify(this, GetNewWeather());
+                Notify(GetNewWeather());
                 Console.WriteLine(new string('-', 70));
                 Thread.Sleep(IntervaMeasurelSeconds * 1000);
             }
